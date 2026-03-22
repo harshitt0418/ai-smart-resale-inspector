@@ -1,18 +1,49 @@
 # AI Smart Resale Inspector
 
-AI Smart Resale Inspector is a full-stack resale assessment app that inspects phones and other consumer devices from uploaded photos or camera input.
+AI Smart Resale Inspector is a full-stack computer vision application for evaluating used phones and consumer devices from camera input or uploaded images.
 
-It currently supports:
+It combines frontend inspection workflows, backend orchestration, and an ML microservice to estimate condition, repair cost, and resale value.
 
-- item detection through YOLO-based vision models
-- background removal before damage analysis
-- damage detection with bounding-box overlays
-- exact model identification with Gemini vision fallback logic
-- repair-cost and resale-price estimation in INR
-- downloadable inspection reports
-- docs and reports pages in the frontend
+## What It Does
 
-## Repository Layout
+- detects the item category from live camera or uploaded photos
+- removes background noise before running damage analysis
+- identifies visible issues with overlayed bounding boxes
+- estimates repair cost and resale price in INR
+- uses Gemini vision for exact device-model identification when available
+- generates downloadable inspection reports
+- includes dedicated docs and reports pages in the app
+
+## End-to-End Flow
+
+1. Capture or upload photos of the device.
+2. Detect the primary item.
+3. Remove background from the inspection image.
+4. Detect damage regions.
+5. Estimate severity, repair cost, and resale value.
+6. Identify the likely exact model.
+7. Generate a report for download.
+
+## Project Highlights
+
+- Next.js inspection UI with camera and upload modes
+- Express backend for orchestration and business logic
+- FastAPI ML service for item and damage detection
+- rembg preprocessing to reduce false positives from backgrounds
+- Gemini-powered model identification fallback flow
+- INR-based pricing pipeline for the India resale market
+
+## Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js, TypeScript, Tailwind CSS, Framer Motion |
+| Backend | Node.js, Express |
+| ML Service | FastAPI, Python, Ultralytics YOLO, rembg |
+| AI Services | Gemini Vision, Transformers-based fallbacks |
+| Pricing | INR pricing engine, repair estimation, optional eBay lookup |
+
+## Repository Structure
 
 ```
 ai-smart-resale-inspector/
@@ -27,38 +58,30 @@ ai-smart-resale-inspector/
 └── README.md
 ```
 
-## Key Files
+## Important Project Files
 
 - `frontend/src/app/inspect/page.tsx` - main inspection route
 - `frontend/src/components/inspect/InspectLayout.tsx` - inspection workflow UI
-- `backend/src/services/modelIdentificationService.js` - Gemini exact-model identification
-- `backend/src/services/pricingService.js` - INR pricing logic and eBay integration hooks
-- `ml-models/service.py` - FastAPI ML entrypoint
-- `ml-models/train/TRAINING_GUIDE.md` - step-by-step model training guide
+- `frontend/src/app/reports/page.tsx` - generated reports listing page
+- `frontend/src/app/docs/page.tsx` - in-app documentation page
+- `backend/src/services/modelIdentificationService.js` - Gemini model identification
+- `backend/src/services/pricingService.js` - pricing and valuation logic
+- `ml-models/service.py` - FastAPI ML service entrypoint
+- `ml-models/train/TRAINING_GUIDE.md` - training instructions for custom models
 
-## Training Guide
+## Training the Models
 
-If you want to train the custom models used by this project, start here:
+If you want to train the custom damage or item detection models, start here:
 
 - `ml-models/train/TRAINING_GUIDE.md`
 - `ml-models/train/colab_train.ipynb`
 
-The training guide covers:
+The training workflow covers:
 
-- damage detection model training on Colab/Kaggle
+- damage detection model training on Colab or Kaggle
 - item detection model training for better device classification
-- dataset selection tips
+- dataset selection guidance
 - installation of trained weights into `ml-models/weights/`
-
-## Tech Stack
-
-| Layer | Technology |
-| --- | --- |
-| Frontend | Next.js, TypeScript, Tailwind CSS, Framer Motion |
-| Backend | Node.js, Express |
-| ML Service | FastAPI, Python, Ultralytics YOLO, rembg |
-| AI Services | Gemini Vision, Transformers-based fallbacks |
-| Pricing | INR pricing engine, repair estimation, optional eBay lookup |
 
 ## Local Development
 
@@ -68,7 +91,7 @@ The training guide covers:
 - Python 3.10+
 - npm
 
-MongoDB is optional for local demo usage. If Atlas is unavailable, the backend still runs in degraded/demo mode.
+MongoDB is optional for local demo usage. If Atlas is unavailable, the backend still runs in demo mode.
 
 ### Install Dependencies
 
@@ -115,7 +138,7 @@ cd ml-models
 python service.py
 ```
 
-Then open:
+Open the following URLs:
 
 - Frontend: `http://localhost:3000`
 - Backend health: `http://localhost:5000/api/health`
@@ -123,9 +146,10 @@ Then open:
 
 ## Notes
 
-- Large model caches are not committed to GitHub because GitHub rejects files over 100 MB.
+- Large model caches are not committed because GitHub rejects files over 100 MB.
 - Transformer and ONNX caches download automatically on first use.
-- If `yolov8n_damage.pt` is missing, the damage route falls back to a base YOLO model and accuracy will be limited.
+- If `yolov8n_damage.pt` is missing, damage detection falls back to a base model and accuracy is limited.
+- Generated PDF reports are excluded from version control.
 
 ## License
 
