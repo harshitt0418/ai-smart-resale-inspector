@@ -1,0 +1,69 @@
+# ml-models/train/dataset.yaml
+#
+# YOLOv8 Dataset Configuration — Damage Detection
+# ─────────────────────────────────────────────────
+# Edit the `path` field to point at your dataset folder,
+# then run: python ml-models/train/train.py
+#
+# Expected directory layout:
+#
+#   <path>/
+#     images/
+#       train/          ← .jpg / .png training images
+#       val/            ← .jpg / .png validation images
+#     labels/
+#       train/          ← YOLO-format .txt label files (one per image)
+#       val/            ← YOLO-format .txt label files
+#
+# Each label file contains one row per bounding box:
+#   <class_id> <cx> <cy> <width> <height>
+# All values are normalised to [0, 1] relative to image dimensions.
+#
+# Example:
+#   0 0.512 0.378 0.234 0.189    ← scratch at centre-ish
+#   1 0.100 0.050 0.420 0.300    ← crack in upper-left region
+#
+# How to get a labeled dataset (pick ONE option):
+#
+#   Option A — Download from Roboflow (recommended, free tier):
+#     1. Go to https://universe.roboflow.com
+#     2. Search "phone damage", "product scratch", or "surface defect"
+#     3. Open a dataset → Versions → Export → YOLOv8 format
+#     4. Set `path` below to the extracted folder
+#     See README.md for recommended datasets.
+#
+#   Option B — Label your own photos:
+#     1. Go to https://app.roboflow.com (free account)
+#     2. Create a new project → Object Detection
+#     3. Upload your photos of damaged items
+#     4. Draw bounding boxes and assign class names below
+#     5. Train/Test split → Export → YOLOv8 format → set `path` below
+#
+#   Option C — Kaggle datasets:
+#     https://www.kaggle.com/datasets/search?q=surface+crack+detection
+#     Download, convert to YOLO format with label_helper.py
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Absolute or relative path to the root of the dataset folder.
+# Using a relative path here requires you to run train.py from this directory.
+# Use an absolute path for safety, e.g.:
+#   path: C:/Users/YourName/datasets/phone-damage
+path: ./data
+
+train: images/train
+val:   images/val
+
+# ── Class definitions ─────────────────────────────────────────────────────────
+# The class INDEX (0, 1, 2…) in your label files must match this list exactly.
+# If you download a Roboflow dataset with different class names, re-map them
+# using label_helper.py or edit this list to match.
+nc: 6
+
+names:
+  0: scratch      # fine linear marks / scuffs
+  1: crack        # fractures, screen cracks, material splits
+  2: dent         # deformations, dents, bends
+  3: stain        # discolouration, water damage, dirt
+  4: chip         # missing material, chipped corners
+  5: corrosion    # rust, oxidation, greenish deposits

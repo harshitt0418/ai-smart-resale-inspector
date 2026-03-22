@@ -1,0 +1,2 @@
+# Weights directory — keep all .pt / .onnx model files here.
+# This file keeps the directory tracked by git while binary weights remain gitignored.
